@@ -1,0 +1,56 @@
+app:
+  name: security
+  
+org:
+  caringbridge:
+    services:
+      version: 1.0
+      swagger:
+        title: CaringBridge Security Micro-Service
+        description: >
+          This is a multi-line description of
+          the micro service. 
+        uri-base: /references  # Tried using ${app.name} here without success, not sure why
+        termslocation: /terms_of_service.txt
+        contact: contact@caringbridge.org
+        license:
+          type: Caring Bridge proprietary license
+          url: http://www.caringbridge.org/licenses/LICENSE
+      db:
+        dbname: ${mongoDb:CB}
+        host: ${mongoHost:www.caringbridge.dev}
+        port: ${mongoPort:27017}
+        username: ${mongoUser:}
+        password: ${mongoPwd:}
+
+#Enable only health of spring boot actuator
+endpoints:
+  health:
+    id: health
+  trace:
+    enabled: true
+
+spring:
+  profiles:
+    active: dev
+    
+---
+spring:
+  profiles: dev
+
+server:
+  port: 11000
+
+---
+spring:
+  resources:
+    chain:
+      enabled: false
+  
+server:
+  port: 11000
+  undertow:
+    accesslog:
+      dir: /var/log/microservices/${app.name}
+      enabled: false
+      pattern: '%h %l %u %t "%r" %s %b %{i,X-Request-Id} %D'
